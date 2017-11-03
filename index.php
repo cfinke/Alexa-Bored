@@ -112,12 +112,21 @@ function something_to_do_response( $response ) {
 	$intros = array(
 		"You could",
 		"Here's an idea:",
+		"It might be fun to",
+		"An oldie but a goodie:",
+		"Looking for something to do?",
+		"How about this:",
+		"Maybe",
+		"Perhaps",
+		"", // Don't always use an intro.
 	);
 
 	$outros = array(
 		"Wouldn't that be fun?",
 		"I wish I could do that, but I'm way up here in the cloud.",
-		"",
+		"That sounds like a great idea, if I do say so myself.",
+		"When was the last time you did that?",
+		"", // Don't always use an outtro.
 	);
 
 	$thing_to_do = something_to_do();
