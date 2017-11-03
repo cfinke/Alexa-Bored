@@ -116,8 +116,8 @@ function something_to_do_response( $response ) {
 		"An oldie but a goodie:",
 		"Looking for something to do?",
 		"How about this:",
-		"Maybe",
-		"Perhaps",
+		"Maybe you would like to",
+		"Perhaps you could",
 		"", // Don't always use an intro.
 	);
 
