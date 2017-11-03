@@ -111,17 +111,14 @@ exit;
 
 function something_to_do_response( $response ) {
 	$intros = array(
-		"Why don't you",
 		"You could",
-		"Why not",
 		"Here's an idea:",
 	);
 
 	$outros = array(
 		"Wouldn't that be fun?",
-		"You haven't done that in a while.",
 		"I wish I could do that, but I'm way up here in the cloud.",
-		"Let me know how it goes.",
+		"",
 	);
 
 	$thing_to_do = something_to_do();
