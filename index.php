@@ -23,83 +23,93 @@ $raw_request = file_get_contents("php://input");
 
 try {
 	$alexa = new \Alexa\Request\Request( $raw_request, APPLICATION_ID );
+
+	// Generate the right type of Request object
+	$request = $alexa->fromData();
+
+	$response = new \Alexa\Response\Response;
 	
-	$alexaRequest = $alexa->fromData();
+	// By default, always end the session unless there's a reason not to.
+	$response->shouldEndSession = true;
 
-	$things_to_do = array(
-		"play hide-and-seek",
-		"clean the bathroom",
-		"run around the house",
-		"see how fast you can say the alphabet",
-		"write a letter to your best friend",
-		"make a stop-motion movie",
-		"play a game of tag",
-		"climb a tree",
-		"make a friendship bracelet",
-		"read a book",
-		"play catch",
-		"build a blanket fort",
-		"play frisbee",
-		"listen to some music",
-		"play simon says",
-		"do a puzzle",
-		"plan a scavenger hunt",
-		"create a time capsule",
-		"make up a secret handshake",
-		"draw with sidewalk chalk",
-		"paint your nails",
-		"make up your own mad libs",
-		"play cards",
-		"jump rope",
-		"write in your diary",
-		"write a song",
-		"check the couch for loose change",
-		"write a poem",
-		"play piano",
-		"write a letter to your self " . rand( 2, 10 ) . " years in the future",
-		"start a neighborhood newspaper",
-		"make a rock collection",
-		"write a fan letter to a famous person",
-		"pretend to be a snake",
-		"plan out your perfect day",
-		"write to your congressional representative",
-		"recreate a photo of yourself from the past",
-		"roll down a hill",
-		"fly a kite",
-		"bury some treasure",
-		"try and catch an animal",
-		"take a photo of someone doing something ordinary",
-		"check if the mail has arrived",
-		"see how still you can lay for 10 minutes",
-		"find a bug",
-		"lick your elbow",
-		"clean up your room for five minutes",
-		"draw a picture of your favorite person",
-		"do a summersault",
-		"put socks on your hands",
-		"hug somebody",
-		"play hopscotch",
-		"draw a self portrait",
-		"count the wrinkles in your elbow",
-		"find a toy to donate to charity",
-		"stand on your head",
-		"wear five shirts at one time",
-		"do ten math problems",
-	);
+	if ( 'LaunchRequest' === $request->data['request']['type'] ) {
+		// Just opening the skill ("Open Activity Book") responds with an activity.
+		handleIntent( $request, $response, 'Bored' );
+	}
+	else {
+		handleIntent( $request, $response, $request->intentName );
+	}
 
-	$animals = array_map( 'trim', file( "data/animals.txt" ) );
-	shuffle( $animals );
-	$animals = array_slice( $animals, 0, 5 );
+	// A quirk of the library -- you need to call respond() to set up the final internal data for the response, but this has no output.
+	$response->respond();
 
-	foreach ( $animals as $animal ) {
-		if ( preg_match( '/^[aeiou]/i', $animal ) ) {
-			$things_to_do[] = "draw a picture of an " . $animal;
-		}
-		else {
-			$things_to_do[] = "draw a picture of a " . $animal;
+	echo json_encode( $response->render() );
+} catch ( Exception $e ) {
+	header( "HTTP/1.1 400 Bad Request" );
+	exit;
+}
+
+/** 
+ * Given an intent, handle all processing and response generation.
+ * This is split up because one intent can lead into another; for example,
+ * moderating a comment immediately launches the next step of the NewComments
+ * intent.
+ *
+ * @param object $request The Request.
+ * @param object $response The Response.
+ * @param string $intent The intent to handle, regardless of $request->intentName
+ */
+function handleIntent( &$request, &$response, $intent ) {
+	$user_id = $request->data['session']['user']['userId'];
+	$state = get_state( $user_id );
+
+	if ( ! $request->sesssion->new ) {
+		switch ( $intent ) {
+			case 'AMAZON.StopIntent':
+			case 'AMAZON.CancelIntent':
+				return;
+			break;
 		}
 	}
 
+	switch ( $intent ) {
+		case 'Bored':
+			$response = something_to_do_response( $response );
+			
+			$state->last_response = $response;
+			save_state( $user_id, $state );
+		break;
+		case 'AMAZON.HelpIntent':
+			$thing_to_do = something_to_do();
+			$response->addOutput( "Activity Book provides you with thousands of things to do when you're bored. Here's one now:" );
+			$response->addOutput( $thing_to_do . "." );
+			
+			$response->addCardTitle( "Using Activity Book" );
+			$response->addCardOutput( "Activity Book can give you something to do when you're bored. Just say \"Open Activity Book\" or \"Ask Activity Book for something to do.\"" );
+			$response->addCardOutput( "Here's an idea to get you started: " . $thing_to_do . "." );
+		break;
+		case 'AMAZON.RepeatIntent':
+			if ( ! $state || ! $state->last_response ) {
+				$response->addOutput( "I'm sorry, I don't know what to repeat." );
+			}
+			else {
+				save_state( $user_id, $state );
+				$response->output = $state->last_response->output;
+			}
+		break;
+	}
+}
+
+$output = ob_get_clean();
+
+ob_end_flush();
+
+header( 'Content-Type: application/json' );
+echo $output;
+
+exit;
+
+function something_to_do_response( $response ) {
 	$intros = array(
 		"Why don't you",
 		"You could",
@@ -110,28 +120,95 @@ try {
 	$outros = array(
 		"Wouldn't that be fun?",
 		"You haven't done that in a while.",
-		"I wish I could do that too, but I'm way up here in the cloud.",
+		"I wish I could do that, but I'm way up here in the cloud.",
 		"Let me know how it goes.",
 	);
 
-	$thing_to_do = $things_to_do[ array_rand( $things_to_do ) ];
-
-	$response = new \Alexa\Response\Response;
-	$response->respond( $intros[ array_rand( $intros ) ] . " " . $thing_to_do . ". " . $outros[ array_rand( $outros ) ] );
+	$thing_to_do = something_to_do();
+	
+	$response->addOutput( $intros[ array_rand( $intros ) ] . " " . $thing_to_do . ". " . $outros[ array_rand( $outros ) ] );
 	$response->withCard( "Here's something to do: " . $thing_to_do . "." );
-	$response->endSession( true );
-
-	echo json_encode( $response->render() );
-
-} catch ( Exception $e ) {
-	header( "HTTP/1.1 400 Bad Request" );
-	exit;
+	
+	return $response;
 }
 
-$output = ob_get_clean();
-ob_end_flush();
+function something_to_do() {
+	$things_to_do = array_filter( array_map( 'trim', file( "data/things_to_do.txt" ) ) );
 
-header( 'Content-Type: application/json' );
-echo $output;
+	$animals = array_map( 'trim', file( "data/animals.txt" ) );
+	shuffle( $animals );
+	$animals = array_slice( $animals, 0, 5 );
 
-exit;
+	foreach ( $animals as $animal ) {
+		if ( preg_match( '/^[aeiou]/i', $animal ) ) {
+			$things_to_do[] = "draw a picture of an " . $animal;
+			$things_to_do[] = "write a story about an an " . $animal;
+			$things_to_do[] = "pretend to be an " . $animal . " and see if anyone can guess what you are";
+		}
+		else {
+			$things_to_do[] = "draw a picture of a " . $animal;
+			$things_to_do[] = "write a story about a " . $animal;
+			$things_to_do[] = "pretend to be a " . $animal . " and see if anyone can guess what you are";
+		}
+	}
+
+	return $things_to_do[ array_rand( $things_to_do ) ];
+}
+
+function state_file( $user_id ) {
+	$state_dir = dirname( __FILE__ ) . "/state";
+	
+	$state_file = $state_dir . "/" . $user_id;
+	
+	touch( $state_file );
+	
+	if ( realpath( $state_file ) != $state_file ) {
+		// Possible path traversal.
+		return false;
+	}
+	
+	return $state_file;
+}
+
+/**
+ * Save the state of the session so that intents that rely on the previous response can function.
+ *
+ * @param string $session_id
+ * @param mixed $state
+ */
+function save_state( $user_id, $state ) {
+	$state_file = state_file( $user_id );
+
+	if ( ! $state_file ) {
+		return false;
+	}
+	
+	if ( ! $state ) {
+		if ( file_exists( $state_file ) ) {
+			unlink( $state_file );
+		}
+	}
+	else {
+		file_put_contents( $state_file, json_encode( $state ) );
+	}
+}
+
+/**
+ * Get the current state of the session.
+ *
+ * @param string $session_id
+ * @return object
+ */
+function get_state( $user_id ) {
+	$state_file = state_file( $user_id );
+
+	if ( ! $state_file ) {
+		return new stdClass();
+	}
+	
+	if ( ! file_exists( $state_file ) ) {
+		return new stdClass();
+	}
+
+	return (object) json_decode( file_get_contents( $state_file ) );
+}
