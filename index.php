@@ -40,7 +40,7 @@ try {
 	}
 
 	// A quirk of the library -- you need to call respond() to set up the final internal data for the response, but this has no output.
-	$response->respond();
+	$response->respondSSML();
 
 	echo json_encode( $response->render() );
 } catch ( Exception $e ) {
@@ -131,7 +131,7 @@ function something_to_do_response( $response ) {
 
 	$thing_to_do = something_to_do();
 	
-	$response->addOutput( $intros[ array_rand( $intros ) ] . " " . $thing_to_do . ". " . $outros[ array_rand( $outros ) ] );
+	$response->addOutput( '<prosody rate="slow">' . $intros[ array_rand( $intros ) ] . " " . $thing_to_do . ".</prosody> " . $outros[ array_rand( $outros ) ] );
 	$response->withCard( "Here's something to do: " . $thing_to_do . "." );
 	
 	return $response;
