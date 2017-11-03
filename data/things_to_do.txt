@@ -1,18 +1,14 @@
-play hide-and-seek
+# Misc
 clean the bathroom
 run around the house
 see how fast you can say the alphabet
 write a letter to your best friend
 make a stop-motion movie
-play a game of tag
 climb a tree but be careful
 make a friendship bracelet
 read a book that you haven't read before
-play a game of catch
 build a blanket fort
-play frisbee with a friend
 listen to some music
-play simon says
 do a puzzle
 plan a scavenger hunt
 create a time capsule
@@ -20,7 +16,6 @@ make up a secret handshake
 draw with sidewalk chalk
 paint your nails with nail polish
 make up your own mad libs
-play a game of cards
 jump rope and see how many times you can jump without tripping
 write in your diary
 check the couch for loose change
@@ -47,7 +42,6 @@ draw a picture of your favorite person
 do a summersault
 put socks on your hands
 give somebody a hug
-play hopscotch
 draw a self portrait
 count the wrinkles in your elbow
 find a toy to donate to charity
@@ -73,3 +67,45 @@ make a scrapbook about your life
 brush your hair a thousand times
 make a list of things you want to do in the next ten years
 do as many sit-ups as you can
+
+# Games.
+play red rover
+play musical chairs
+play dodgeball
+arm wrestle with a friend
+thumb wrestle with a friend
+have a spelling bee
+play hangman
+play tic-tac-toe
+set up an obstacle course
+have a water balloon fight
+play a guessing game
+play red light/green light
+play mother may i
+play kick the can
+have a staring contest. The first person to blink loses
+have a not-laughing contest. The first person to laugh loses
+give a piggy back ride
+play shadow tag
+play tug-of-war
+play leap frog
+play rock/scissor/paper
+play flashlight tag
+play freeze tag
+play hide and seek
+play monkey in the middle
+play simon says
+play crazy eights
+play capture the flag
+have an easter egg hunt
+play duck duck goose. Or if you are from Minnesota, play duck duck gray duck
+play hot potato
+play sardines
+play tag
+play limbo
+play hide-and-seek
+play a game of tag
+play a game of catch
+play frisbee with a friend
+play simon says
+play hopscotch

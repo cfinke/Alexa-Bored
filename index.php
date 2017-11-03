@@ -138,7 +138,7 @@ function something_to_do_response( $response ) {
 }
 
 function something_to_do() {
-	$things_to_do = array_filter( array_map( 'trim', file( "data/things_to_do.txt" ) ) );
+	$things_to_do = array_filter( array_map( 'trim', file( "data/things_to_do.txt" ) ), 'filter_things_to_do' );
 
 	$animals = array_map( 'trim', file( "data/animals.txt" ) );
 	shuffle( $animals );
@@ -159,6 +159,21 @@ function something_to_do() {
 
 	return $things_to_do[ array_rand( $things_to_do ) ];
 }
+
+function filter_things_to_do( $thing ) {
+	$thing = trim( $thing );
+	
+	if ( ! $thing ) {
+		return false;
+	}
+	
+	if ( substr( $thing, 0, 1 ) === '#' ) {
+		return false;
+	}
+	
+	return true;
+}
+
 
 function state_file( $user_id ) {
 	$state_dir = dirname( __FILE__ ) . "/state";
