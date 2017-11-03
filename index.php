@@ -2,20 +2,19 @@
 
 require "./config.php";
 
-// https://github.com/korra88/amazon-alexa-php
-require "../lib/amazon-alexa-php/src/Request/Request.php";
-require "../lib/amazon-alexa-php/src/Request/Application.php";
-require "../lib/amazon-alexa-php/src/Request/Certificate.php";
-require "../lib/amazon-alexa-php/src/Request/IntentRequest.php";
-require "../lib/amazon-alexa-php/src/Request/LaunchRequest.php";
-require "../lib/amazon-alexa-php/src/Request/Session.php";
-require "../lib/amazon-alexa-php/src/Request/SessionEndedRequest.php";
-require "../lib/amazon-alexa-php/src/Request/User.php";
+require "./lib/amazon-alexa-php/src/Request/Request.php";
+require "./lib/amazon-alexa-php/src/Request/Application.php";
+require "./lib/amazon-alexa-php/src/Request/Certificate.php";
+require "./lib/amazon-alexa-php/src/Request/IntentRequest.php";
+require "./lib/amazon-alexa-php/src/Request/LaunchRequest.php";
+require "./lib/amazon-alexa-php/src/Request/Session.php";
+require "./lib/amazon-alexa-php/src/Request/SessionEndedRequest.php";
+require "./lib/amazon-alexa-php/src/Request/User.php";
 
-require "../lib/amazon-alexa-php/src/Response/Response.php";
-require "../lib/amazon-alexa-php/src/Response/OutputSpeech.php";
-require "../lib/amazon-alexa-php/src/Response/Card.php";
-require "../lib/amazon-alexa-php/src/Response/Reprompt.php";
+require "./lib/amazon-alexa-php/src/Response/Response.php";
+require "./lib/amazon-alexa-php/src/Response/OutputSpeech.php";
+require "./lib/amazon-alexa-php/src/Response/Card.php";
+require "./lib/amazon-alexa-php/src/Response/Reprompt.php";
 
 ob_start();
 
