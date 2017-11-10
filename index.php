@@ -40,7 +40,7 @@ try {
 	}
 
 	// A quirk of the library -- you need to call respond() to set up the final internal data for the response, but this has no output.
-	$response->respondSSML();
+	$response->respond();
 
 	echo json_encode( $response->render() );
 } catch ( Exception $e ) {
@@ -131,8 +131,17 @@ function something_to_do_response( $response ) {
 
 	$thing_to_do = something_to_do();
 	
-	$response->addOutput( '<prosody rate="slow">' . $intros[ array_rand( $intros ) ] . " " . $thing_to_do . ".</prosody> " . $outros[ array_rand( $outros ) ] );
-	$response->withCard( "Here's something to do: " . $thing_to_do . "." );
+	$output = $intros[ array_rand( $intros ) ] . " " . $thing_to_do;
+	
+	if ( substr( $thing_to_do, -1 ) !== '.' ) {
+		$thing_to_do .= '.';
+		
+		// If the thing to do ends in a period, it has a natural ending, so don't add an outro.
+		$output .= ". " . $outros[ array_rand( $outros ) ];
+	}
+	
+	$response->addOutput( $output );
+	$response->withCard( "Here's something to do: " . $thing_to_do );
 	
 	return $response;
 }
