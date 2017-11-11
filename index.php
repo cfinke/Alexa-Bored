@@ -73,7 +73,7 @@ function handleIntent( &$request, &$response, $intent ) {
 
 	switch ( $intent ) {
 		case 'Bored':
-			$response = something_to_do_response( $response );
+			$response = something_to_do_response( $response, $state );
 			
 			$state->last_response = $response;
 			save_state( $user_id, $state );
@@ -108,7 +108,7 @@ echo $output;
 
 exit;
 
-function something_to_do_response( $response ) {
+function something_to_do_response( $response, &$state ) {
 	$intros = array(
 		"You could",
 		"Here's an idea:",
@@ -126,10 +126,13 @@ function something_to_do_response( $response ) {
 		"I wish I could do that, but I'm way up here in the cloud.",
 		"That sounds like a great idea, if I do say so myself.",
 		"When was the last time you did that?",
+		"",
+		"",
+		"",
 		"", // Don't always use an outtro.
 	);
 
-	$thing_to_do = something_to_do();
+	$thing_to_do = something_to_do( $state );
 	
 	$output = $intros[ array_rand( $intros ) ] . " " . $thing_to_do;
 	
@@ -146,7 +149,14 @@ function something_to_do_response( $response ) {
 	return $response;
 }
 
-function something_to_do() {
+function something_to_do( &$state ) {
+	if ( isset( $state->recent_things_to_do ) ) {
+		$already_heard_things_to_do = $state->recent_things_to_do;
+	}
+	else {
+		$already_heard_things_to_do = array();
+	}
+	
 	$things_to_do = array_filter( array_map( 'trim', file( "data/things_to_do.txt" ) ), 'filter_things_to_do' );
 
 	$animals = array_map( 'trim', file( "data/animals.txt" ) );
@@ -166,7 +176,17 @@ function something_to_do() {
 		}
 	}
 
-	return $things_to_do[ array_rand( $things_to_do ) ];
+	$things_to_do = array_diff( $things_to_do, $already_heard_things_to_do );
+
+	$thing_to_do = $things_to_do[ array_rand( $things_to_do ) ];
+	
+	// Keep track of the last 100 things we've given this user to do so we don't have frequent repeats.
+	$already_heard_things_to_do = array_slice( $already_heard_things_to_do, -99 );
+	$already_heard_things_to_do[] = $thing_to_do;
+	
+	$state->recent_things_to_do = $already_heard_things_to_do;
+
+	return $thing_to_do;
 }
 
 function filter_things_to_do( $thing ) {
