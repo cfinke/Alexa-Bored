@@ -81,14 +81,18 @@ function handleIntent( &$request, &$response, $intent ) {
 			
 			$response->shouldEndSession = false;
 		break;
+		case 'AMAZON.FallbackIntent':
 		case 'AMAZON.HelpIntent':
-			$thing_to_do = something_to_do();
+			$thing_to_do = something_to_do( $state );
+			
 			$response->addOutput( "Activity Book provides you with thousands of things to do when you're bored. Here's one now:" );
-			$response->addOutput( $thing_to_do . "." );
+			$response->addOutput( $thing_to_do );
 			
 			$response->addCardTitle( "Using Activity Book" );
 			$response->addCardOutput( "Activity Book can give you something to do when you're bored. Just say \"Open Activity Book\" or \"Ask Activity Book for something to do.\"" );
 			$response->addCardOutput( "Here's an idea to get you started: " . $thing_to_do . "." );
+			
+			$response->shouldEndSession = false;
 		break;
 		case 'AMAZON.RepeatIntent':
 			if ( ! $state || ! $state->last_response ) {
@@ -127,27 +131,9 @@ function something_to_do_response( $response, &$state ) {
 		"", // Don't always use an intro.
 	);
 
-	$outros = array(
-		"Wouldn't that be fun?",
-		"I wish I could do that, but I'm way up here in the cloud.",
-		"That sounds like a great idea, if I do say so myself.",
-		"When was the last time you did that?",
-		"",
-		"",
-		"",
-		"", // Don't always use an outtro.
-	);
-
 	$thing_to_do = something_to_do( $state );
 	
 	$output = $intros[ array_rand( $intros ) ] . " " . $thing_to_do;
-	
-	if ( substr( $thing_to_do, -1 ) !== '.' ) {
-		$thing_to_do .= '.';
-		
-		// If the thing to do ends in a period, it has a natural ending, so don't add an outro.
-		$output .= ". " . $outros[ array_rand( $outros ) ];
-	}
 	
 	$response->addOutput( $output );
 	$response->withCard( "Here's something to do: " . $thing_to_do );
@@ -189,6 +175,17 @@ function something_to_do( &$state ) {
 	// Keep track of the last 100 things we've given this user to do so we don't have frequent repeats.
 	$already_heard_things_to_do = array_slice( $already_heard_things_to_do, -99 );
 	$already_heard_things_to_do[] = $thing_to_do;
+	
+	$outros = array(
+		"Wouldn't that be fun?",
+		"Do you want to try that?",
+		"Does that work for you?",
+		"Do you like that idea?",
+		"Is that something you want to do?",
+		"Is that something you can do?",
+	);
+	
+	$thing_to_do .= ". " . $outros[ array_rand( $outros ) ];
 	
 	$state->recent_things_to_do = $already_heard_things_to_do;
 
