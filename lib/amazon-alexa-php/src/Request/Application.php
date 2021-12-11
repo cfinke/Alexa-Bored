@@ -16,7 +16,7 @@ class Application {
 	public $requestApplicationId;
 
 	public function __construct($applicationId) {
-		$this->applicationId = preg_split('/,/', $applicationId);
+		$this->applicationId = explode( ",", $applicationId );
 	}
 
 	public function setRequestApplicationId($applicationId) {
