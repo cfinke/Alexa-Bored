@@ -73,10 +73,13 @@ function handleIntent( &$request, &$response, $intent ) {
 
 	switch ( $intent ) {
 		case 'Bored':
+		case 'AMAZON.NoIntent':
 			$response = something_to_do_response( $response, $state );
 			
 			$state->last_response = $response;
 			save_state( $user_id, $state );
+			
+			$response->shouldEndSession = false;
 		break;
 		case 'AMAZON.HelpIntent':
 			$thing_to_do = something_to_do();
@@ -95,6 +98,9 @@ function handleIntent( &$request, &$response, $intent ) {
 				save_state( $user_id, $state );
 				$response->output = $state->last_response->output;
 			}
+		break;
+		case 'AMAZON.YesIntent':
+			$response->addOutput( "Great, I'm glad I was able to help." );
 		break;
 	}
 }
