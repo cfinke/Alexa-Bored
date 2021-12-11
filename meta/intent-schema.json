@@ -1,28 +1,28 @@
 {
-  "intents":[
-    {
-        "intent": "Bored"
-    },
-    {
-      "intent": "AMAZON.HelpIntent"
-    },
-    {
-      "intent": "AMAZON.RepeatIntent"
-    },
-    {
-      "intent": "AMAZON.StopIntent"
-    },
-    {
-      "intent": "AMAZON.CancelIntent"
-    },
-    {
-      "intent": "AMAZON.YesIntent"
-    },
-    {
-      "intent": "AMAZON.NoIntent"
-    },
-	{
-		"intent": "AMAZON.FallbackIntent"
-	},
-  ]
+	"intents": [
+		{
+			"intent": "Bored",
+		},
+		{
+			"intent": "AMAZON.HelpIntent",
+		},
+		{
+			"intent": "AMAZON.RepeatIntent",
+		},
+		{
+			"intent": "AMAZON.StopIntent",
+		},
+		{
+			"intent": "AMAZON.CancelIntent",
+		},
+		{
+			"intent": "AMAZON.YesIntent",
+		},
+		{
+			"intent": "AMAZON.NoIntent",
+		},
+		{
+			"intent": "AMAZON.FallbackIntent",
+		},
+	]
 }
