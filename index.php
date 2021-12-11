@@ -44,6 +44,8 @@ try {
 
 	echo json_encode( $response->render() );
 } catch ( Exception $e ) {
+	file_put_contents( "error.log", var_export( $e, true ) . "\n", FILE_APPEND );
+	
 	header( "HTTP/1.1 400 Bad Request" );
 	exit;
 }
@@ -70,7 +72,7 @@ function handleIntent( &$request, &$response, $intent ) {
 			break;
 		}
 	}
-
+	
 	switch ( $intent ) {
 		case 'Bored':
 		case 'AMAZON.NoIntent':
@@ -105,6 +107,9 @@ function handleIntent( &$request, &$response, $intent ) {
 		break;
 		case 'AMAZON.YesIntent':
 			$response->addOutput( "Great, I'm glad I was able to help." );
+		break;
+		default:
+			file_put_contents( "error.log", "Couldn't handle " . $intent . "\n", FILE_APPEND );
 		break;
 	}
 }
