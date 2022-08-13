@@ -111,7 +111,7 @@ play tic-tac-toe
 set up an obstacle course
 have a water balloon fight
 play a guessing game
-play red light/green light
+play red light green light
 play mother may i
 play kick the can
 have a staring contest. The first person to blink loses
@@ -120,7 +120,7 @@ give a piggy back ride
 play shadow tag
 play tug-of-war
 play leap frog
-play rock/scissor/paper
+play rock paper scissors
 play flashlight tag
 play freeze tag
 play hide and seek
@@ -141,4 +141,9 @@ play frisbee with a friend
 play simon says
 play hopscotch
 play solitaire
+play baseball
+play marco polo
+play basketball
+
+
 
