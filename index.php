@@ -129,7 +129,7 @@ function something_to_do_response( $response, &$state ) {
 		"Here's an idea:",
 		"It might be fun to",
 		"An oldie but a goodie:",
-		"Looking for something to do?",
+		//"Looking for something to do?",
 		"How about this:",
 		"Maybe you would like to",
 		"Perhaps you could",
