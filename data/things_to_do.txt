@@ -144,6 +144,8 @@ play solitaire
 play baseball
 play marco polo
 play basketball
+draw your own comic book
+draw your own comic strip
 
 
 
